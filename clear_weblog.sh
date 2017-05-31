@@ -1,14 +1,22 @@
 #!/bin/sh
-home_dir="/home/deployer"
-clear_dir="/usr/local/apache/logs"
+home_dir=`dirname $0`
+rubbish_dir="/data/logs /data/scripts/bak"
+tomcat_log_dir="/data/servers/*/logs"
 
-if [ ! -d "$clear_dir"  ];then
-  echo "$clear_dir is not exists, then exit."
-  break
- else
-  find $clear_dir  -depth  -type f  -name '*.log'  -mtime +2 -exec rm -rf {} \;
-  #find $previewWord_dir  -depth  -type f  -name '*.docx'  -mtime +7 -exec rm -rf {} \;
-  #find $previewWord_dir  -depth  -type f  -name '*.html'  -mtime +7 -exec rm -rf {} \;
-  echo "$clear_dir,cleanup has been completed!"
-fi
-echo "clear done" `date +%Y%m%d-%T` >> $home_dir/scripts/clear_data.log
+for DIR in $rubbish_dir $tomcat_log_dir
+  do
+    if [ -d "$DIR" ];then
+      find $DIR  -depth  -type f  -name '*.log'  -mtime +10 -exec rm -rf {} \;
+      find $DIR  -depth  -type f  -name '*.txt'  -mtime +10 -exec rm -rf {} \;
+      find $DIR  -depth  -type f  -name '*.war_*'  -mtime +10 -exec rm -rf {} \;
+      
+      echo "$DIR cleanup has been completed!"
+    fi
+  done
+
+for STDOUT_LOG in `find $tomcat_log_dir -type f | grep "catalina.out"`
+  do
+    cat /dev/null > $STDOUT_LOG
+  done
+
+echo "clean done" `date +%Y%m%d-%T` >> $home_dir/bak/rubbish_clean_data.log
