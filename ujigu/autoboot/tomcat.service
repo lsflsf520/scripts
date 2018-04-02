@@ -1,0 +1,14 @@
+[Unit]
+Description=tomcat server for web-csaicms
+After=network.target remote-fs.target nss-lookup.target
+
+[Service]
+Type=forking
+ExecStart=/data/scripts/restart.sh web-csaicms
+ExecReload=/data/scripts/restart.sh web-csaicms
+ExecStop=kill -9 `ps aux | grep "/tomcat_web-csaicms/" | grep java | awk '{print $2}'`
+User=deployer
+Group=deployer
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,14 @@
+[Unit]  
+Description=mysql
+After=network.target  
+   
+[Service]  
+Type=forking  
+PIDFile=/data/mysql/mysql.pid  
+ExecStart=/usr/local/mysql/bin/restart.sh
+ExecReload=/usr/local/mysql/bin/restart.sh
+ExecStop=/bin/kill -s QUIT $MAINPID
+PrivateTmp=true  
+   
+[Install]  
+WantedBy=multi-user.target
