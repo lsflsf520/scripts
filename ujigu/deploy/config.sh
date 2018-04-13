@@ -26,25 +26,31 @@ function checkEnv(){
   fi
   
   if [[ $1 =~ "-csaicms" ]]; then
-     CODE_BASE="https://svn.domain.com/svn/csai.cms.java"
+     CODE_BASE="https://210.73.209.77:8443/svn/csai.cms.java"
      WHITE_WEB="web-csaicms web-csaicms-admin"
-     server_dic=(["web-csaicms"]="77" ["web-csaicms-admin"]="77")
+     server_dic=(["web-csaicms"]="73 76" ["web-csaicms-admin"]="73")
+     deploy_modules="csaicms-remote"
   elif [[ $1 =~ "-card" ]]; then
-     CODE_BASE="https://svn.domain.com/svn/creditcard.java"
+     CODE_BASE="https://210.73.209.77:8443/svn/creditcard.java"
      WHITE_WEB="web-card web-card-admin"
      server_dic=(["default"]="76")
   elif [[ $1 =~ "-p2p" ]]; then
-     CODE_BASE="https://svn.domain.com/svn/p2p.v2"
+     CODE_BASE="https://210.73.209.77:8443/svn/p2p.v2"
      WHITE_WEB="web-p2p-admin web-p2p-market web-p2p-archive web-p2p-open"
      server_dic=(["default"]="76")
   elif [[ $1 =~ "-cms" ]]; then
-     CODE_BASE="https://svn.domain.com/svn/xicaimao/cms"
+     CODE_BASE="https://210.73.209.77:8443/svn/xicaimao/cms"
      WHITE_WEB="web-cms-admin web-cms-bxadmin web-cms web-cms-api"
      server_dic=(["default"]="54")
   elif [[ $1 =~ "-upfile" ]] || [[ $1 =~ "-acl" ]]; then
-     CODE_BASE="https://svn.domain.com/svn/commons"
+     CODE_BASE="https://210.73.209.77:8443/svn/commons"
      WHITE_WEB="web-upfile web-acl"
      server_dic=(["web-upfile"]="75" ["web-acl"]="76")
+     deploy_modules="common-acl-intf"
+  elif [[ $1 =~ "-loan" ]]; then
+     CODE_BASE="https://210.73.209.77:8443/svn/csaimall.daikuan.java"
+     WHITE_WEB="web-loan web-loan-admin web-loan-api web-loan-union"
+     server_dic=(["default"]="73")
   else
      echo "not defined CODE_BASE variable for project name $1"
      exit 5 
@@ -121,6 +127,10 @@ function compile(){
   fi
 
   cd $WORKSPACE/$DIR_NAME
+
+  if [ ! -z "$deploy_modules" ];then
+     mvn -pl $deploy_modules clean deploy
+  fi
 
   for PROJECT_NAME in $1
     do
